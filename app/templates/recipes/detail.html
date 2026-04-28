@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm">
+            {% if recipe.image_path %}
+            <img src="{{ url_for('static', filename=recipe.image_path) }}" class="card-img-top" alt="{{ recipe.title }}">
+            {% endif %}
+            
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="card-title mb-0">{{ recipe.title }}</h2>
+                    <div class="d-flex gap-2">
+                        <form action="{{ url_for('recipe.toggle_favorite', id=recipe.id) }}" method="POST">
+                            <button type="submit" class="btn btn-outline-warning">
+                                <i class="bi {{ 'bi-star-fill' if recipe.is_favorite else 'bi-star' }}"></i> 
+                                {{ '取消最愛' if recipe.is_favorite else '加入最愛' }}
+                            </button>
+                        </form>
+                        <a href="{{ url_for('recipe.edit_recipe', id=recipe.id) }}" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> 編輯</a>
+                        <form action="{{ url_for('recipe.delete_recipe', id=recipe.id) }}" method="POST" onsubmit="return confirm('確定要刪除這份食譜嗎？');">
+                            <button type="submit" class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    {% for tag in tags %}
+                    <span class="badge bg-secondary">{{ tag.name }}</span>
+                    {% endfor %}
+                    <small class="text-muted ms-2"><i class="bi bi-calendar3"></i> {{ recipe.created_at[:10] }}</small>
+                </div>
+
+                <div class="mb-5">
+                    <h5 class="border-bottom pb-2 mb-3">作法與食材</h5>
+                    <div style="white-space: pre-wrap;">{{ recipe.content }}</div>
+                </div>
+
+                <div class="bg-light p-4 rounded mt-4">
+                    <h5 class="mb-3"><i class="bi bi-journal-text"></i> 烹飪筆記</h5>
+                    <form action="{{ url_for('recipe.update_notes', id=recipe.id) }}" method="POST">
+                        <div class="mb-3">
+                            <textarea class="form-control" name="notes" rows="4" placeholder="記錄你的改良心得或失敗經驗...">{{ recipe.notes or '' }}</textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">儲存筆記</button>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <div class="mt-3">
+            <a href="{{ request.referrer or url_for('recipe.index') }}" class="btn btn-link text-decoration-none"><i class="bi bi-arrow-left"></i> 返回列表</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

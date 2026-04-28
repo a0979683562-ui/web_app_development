@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white pb-0 border-bottom-0 pt-4 px-4">
+                <h3 class="card-title">新增食譜</h3>
+            </div>
+            <div class="card-body p-4">
+                <form action="{{ url_for('recipe.create_recipe') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="title" class="form-label text-danger fw-bold">食譜標題 *</label>
+                        <input type="text" class="form-control" id="title" name="title" required placeholder="例如：番茄炒蛋">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="image" class="form-label">上傳圖片</label>
+                        <input class="form-control" type="file" id="image" name="image" accept="image/*">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">標籤分類</label>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            {% for tag in tags %}
+                            <div class="form-check form-check-inline m-0">
+                                <input class="form-check-input" type="checkbox" name="tags" id="tag_{{ tag.id }}" value="{{ tag.id }}">
+                                <label class="form-check-label" for="tag_{{ tag.id }}">{{ tag.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <input type="text" class="form-control form-control-sm mt-2" name="new_tags" placeholder="新增標籤 (多個標籤請用逗號隔開)">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">食材與作法</label>
+                        <textarea class="form-control" id="content" name="content" rows="8" placeholder="1. 準備兩顆蛋..."></textarea>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_favorite" name="is_favorite">
+                        <label class="form-check-label" for="is_favorite">加入我的最愛</label>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{{ url_for('recipe.index') }}" class="btn btn-outline-secondary">取消</a>
+                        <button type="submit" class="btn btn-primary">儲存食譜</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
